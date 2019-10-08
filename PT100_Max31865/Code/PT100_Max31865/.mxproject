@@ -1,7 +1,7 @@
 [PreviousGenFiles]
-HeaderPath=C:/Users/Home_Premium/Desktop/WORK/2. ARM/Test/PT100_Max31865/Inc
+HeaderPath=C:/Users/Home_Premium/Desktop/WORK/4. GIT/STM32F103/PT100_Max31865/Code/PT100_Max31865/Inc
 HeaderFiles=stm32f1xx_it.h;stm32f1xx_hal_conf.h;main.h;
-SourcePath=C:/Users/Home_Premium/Desktop/WORK/2. ARM/Test/PT100_Max31865/Src
+SourcePath=C:/Users/Home_Premium/Desktop/WORK/4. GIT/STM32F103/PT100_Max31865/Code/PT100_Max31865/Src
 SourceFiles=stm32f1xx_it.c;stm32f1xx_hal_msp.c;main.c;
 
 [PreviousLibFiles]

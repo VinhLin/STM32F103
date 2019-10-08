@@ -35,7 +35,7 @@
 #define RTD_A 3.9083e-3
 #define RTD_B -5.775e-7
 
-#define GPIO_PORT_CS	GPIOB
-#define GPIO_PIN_CS		GPIO_PIN_8
+#define GPIO_PORT_CS	GPIOA
+#define GPIO_PIN_CS		GPIO_PIN_12
 
 #endif //MAX31865_LIB_MAX31865_H

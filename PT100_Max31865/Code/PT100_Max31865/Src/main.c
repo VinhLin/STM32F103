@@ -51,7 +51,7 @@
 /* Private variables ---------------------------------------------------------*/
 SPI_HandleTypeDef hspi1;
 
-UART_HandleTypeDef huart1;
+UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
@@ -61,8 +61,8 @@ UART_HandleTypeDef huart1;
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
-static void MX_USART1_UART_Init(void);
 static void MX_SPI1_Init(void);
+static void MX_USART2_UART_Init(void);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
@@ -72,9 +72,10 @@ static void MX_SPI1_Init(void);
 /* USER CODE BEGIN 0 */
 void printchar (uint8_t c)
 {
-	HAL_UART_Transmit(&huart1, &c, 1, 1000);
+	HAL_UART_Transmit(&huart2, &c, 1, 1000);
 }
 
+//Cac function phuc vu cho viec doc tin hieu nhiet do tu MAX31865
 void spi_write(uint8_t *data, uint8_t len)
 {
 	HAL_SPI_Transmit(&hspi1, data, len, HAL_MAX_DELAY);
@@ -155,7 +156,7 @@ float MAX31865_readTemp()
     uint32_t data = max3[0] << 8;
     data |= max3[1];
     data >>= 1;
-    DBG_print("data=%02x \r\n",data);
+//  DBG_print("data=%02x \r\n",data);
 
     // Calculate the temperature from the measured resistance
     float temp = temperature(100, 430, (float) data );
@@ -190,8 +191,8 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_USART1_UART_Init();
   MX_SPI1_Init();
+  MX_USART2_UART_Init();
 
   /* USER CODE BEGIN 2 */
   DBG_setup(printchar);
@@ -205,8 +206,26 @@ int main(void)
 
   /* USER CODE BEGIN 3 */
 	  float temp = MAX31865_readTemp();
-	  DBG_print("temp=%f \r\n",temp);
-	  HAL_Delay(1500);
+//	  DBG_print("temp=%f \r\n",temp);
+
+	  if (temp > 0 && temp < 850) {
+		  // Khi do nhiet do trong khoang 0 -> 850 thi sang den Do, tat den Xanh
+		  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, GPIO_PIN_SET);	//Led Do sang
+		  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_RESET);	//Led Xanh tat
+			  DBG_print("$%f \r\n",temp);
+	  } else if (temp > -200 && temp < 0) {
+		  // Khi do nhiet do trong khoang -200 -> 0 thi sang den Xanh, tat den Do
+		  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, GPIO_PIN_RESET);	//Led Do tat
+		  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_SET);	//Led Xanh sang
+			  DBG_print("$%f \r\n",temp);
+	  } else {
+		  // Neu nam ngoai ca 2 truong hop tren thi tat ca 2 den
+		  // Hoac khi chua ket noi cam bien thi cung tat ca 2 den
+		  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, GPIO_PIN_RESET);
+		  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_RESET);
+	  }
+
+	  HAL_Delay(1000);
   }
   /* USER CODE END 3 */
 
@@ -280,19 +299,19 @@ static void MX_SPI1_Init(void)
 
 }
 
-/* USART1 init function */
-static void MX_USART1_UART_Init(void)
+/* USART2 init function */
+static void MX_USART2_UART_Init(void)
 {
 
-  huart1.Instance = USART1;
-  huart1.Init.BaudRate = 115200;
-  huart1.Init.WordLength = UART_WORDLENGTH_8B;
-  huart1.Init.StopBits = UART_STOPBITS_1;
-  huart1.Init.Parity = UART_PARITY_NONE;
-  huart1.Init.Mode = UART_MODE_TX_RX;
-  huart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-  huart1.Init.OverSampling = UART_OVERSAMPLING_16;
-  if (HAL_UART_Init(&huart1) != HAL_OK)
+  huart2.Instance = USART2;
+  huart2.Init.BaudRate = 9600;
+  huart2.Init.WordLength = UART_WORDLENGTH_8B;
+  huart2.Init.StopBits = UART_STOPBITS_1;
+  huart2.Init.Parity = UART_PARITY_NONE;
+  huart2.Init.Mode = UART_MODE_TX_RX;
+  huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart2.Init.OverSampling = UART_OVERSAMPLING_16;
+  if (HAL_UART_Init(&huart2) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
@@ -317,12 +336,21 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_12, GPIO_PIN_SET);
 
-  /*Configure GPIO pin : PB8 */
-  GPIO_InitStruct.Pin = GPIO_PIN_8;
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8|GPIO_PIN_9, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : PA12 */
+  GPIO_InitStruct.Pin = GPIO_PIN_12;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PB8 PB9 */
+  GPIO_InitStruct.Pin = GPIO_PIN_8|GPIO_PIN_9;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 }
