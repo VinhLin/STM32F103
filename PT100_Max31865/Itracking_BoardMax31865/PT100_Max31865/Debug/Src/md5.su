@@ -1,0 +1,4 @@
+md5.c:100:20:body	112	static
+md5.c:207:6:MD5_Init	0	static
+md5.c:218:6:MD5_Update	24	static
+md5.c:258:6:MD5_Final	16	static

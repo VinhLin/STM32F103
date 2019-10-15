@@ -1,6 +1,0 @@
-dbgPrint.c:49:6:DBG_print_c	0	static
-dbgPrint.c:116:6:DBG_print_u	40	static
-dbgPrint.c:212:6:DBG_print_h	40	static
-dbgPrint.c:264:6:DBG_print_hs	24	static
-dbgPrint.c:39:6:DBG_setup	0	static
-dbgPrint.c:336:6:DBG_print	80	static

@@ -1,0 +1,14 @@
+stringlib.c:38:6:SL_split	48	static
+stringlib.c:109:5:SL_startwith	16	static
+stringlib.c:155:6:SL_sub	0	static
+stringlib.c:175:8:SL_s2double	24	static
+stringlib.c:225:5:SL_search	32	static
+stringlib.c:123:4:SL_cut	16	static
+stringlib.c:248:6:SL_parseDouble	24	static
+stringlib.c:264:5:SL_double2s	32	static
+stringlib.c:306:4:SL_verify	36	static
+stringlib.c:352:5:SL_searchNum	32	static
+stringlib.c:387:4:SL_isHexString	8	static
+stringlib.c:416:4:SL_convHexChar2value	0	static
+stringlib.c:435:6:SL_convHexArr2string	24	static
+stringlib.c:452:4:SL_isNumString	8	static
