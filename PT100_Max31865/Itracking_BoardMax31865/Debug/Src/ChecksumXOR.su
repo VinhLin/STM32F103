@@ -1,0 +1,2 @@
+ChecksumXOR.c:20:6:valueChecksum	24	static
+ChecksumXOR.c:46:4:compareChecksum	32	static
